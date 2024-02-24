@@ -23,6 +23,15 @@ class Product extends Model
     ];
     public $timestamp = true;
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::updated(function ($product) {
+            event(new \App\Events\UpdateProductStock($product));
+        });
+    }
+
     public function details()
     {
         return $this->hasOne(ProductDetail::class, 'product_id', 'id');
