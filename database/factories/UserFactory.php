@@ -33,6 +33,14 @@ class UserFactory extends Factory
         ];
     }
 
+    public function configure()
+    {
+        return $this->afterCreating(function (User $user) {
+            $roles = \Spatie\Permission\Models\Role::query()->where(['name' => 'kasir', 'guard_name' => 'web'])->get();
+            $user->assignRole($roles);
+        });
+    }
+
     /**
      * Indicate that the model's email address should be unverified.
      */
