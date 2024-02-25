@@ -10,10 +10,10 @@
     }
 @endphp
 
-<span class="grid" x-data="{isActive: {{$isActive}}}">
+<span class="grid rounded-b-xl" x-data="{isActive: {{$isActive}}}" :class="{'bg-blue-50': isActive}">
     <button @click="isActive = !isActive" type="button" 
-    class="text-slate-600 flex items-center hover:bg-slate-600 hover:text-white active:scale-95 hover:bg-opacity-95 cursor-pointer ease-in duration-150 p-4 rounded-xl group"
-    :class="{'text-white': isActive, 'text-slate-600': !isActive, 'bg-slate-600': isActive}"
+    class="text-blue-600 flex items-center hover:bg-blue-600 hover:text-white active:scale-95 hover:bg-opacity-95 cursor-pointer ease-in duration-150 p-4 rounded-xl group"
+    :class="{'text-white': isActive, 'text-gray-500': !isActive, 'bg-blue-600': isActive}"
     >
         {{ $icon }}
         <span class="ml-5 block">
@@ -26,7 +26,7 @@
         </span>
     </button>
 
-    <div x-show="isActive" @click.outside="isActive = false" class="mt-3">
+    <div x-show="isActive" @if (!request()->routeIs('product.*')) @click.outside="isActive = false" @endif  class="mt-3">
         {{ $slot }}
     </div>
 </span>

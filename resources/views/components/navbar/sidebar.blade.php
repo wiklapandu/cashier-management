@@ -23,7 +23,7 @@
 
         <ul class="grid gap-2">
             <li>
-                <x-sidebar.nav-link :active="request()->routeIs('dashboard')">
+                <x-sidebar.nav-link :active="request()->routeIs('dashboard')" :href="route('dashboard')">
                     <x-slot name="icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-pie-chart-fill" viewBox="0 0 16 16">
                             <path d="M15.985 8.5H8.207l-5.5 5.5a8 8 0 0 0 13.277-5.5zM2 13.292A8 8 0 0 1 7.5.015v7.778zM8.5.015V7.5h7.485A8 8 0 0 0 8.5.015"/>
@@ -34,15 +34,24 @@
                 </x-sidebar.nav-link>
             </li>
             <li>
-                <x-sidebar.nav-link>
+                <x-sidebar.nav-link-dropdown :active="request()->routeIs('product.*')">
                     <x-slot name="icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-bag-fill" viewBox="0 0 16 16">
                             <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1m3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4z"/>
                         </svg>
                     </x-slot>
-                    
-                    <span class="text-xl">Products</span>
-                </x-sidebar.nav-link>
+                    <x-slot name="trigger">
+                        <span class="text-xl">Products</span>
+                    </x-slot>
+
+                    <ul class="grid gap-2 m-3">
+                        <li>
+                            <x-sidebar.nav-link :href="route('product.read')" :active="request()->routeIs('product.read')">
+                                <span class="text-xl">All Products</span>
+                            </x-sidebar.nav-link>
+                        </li>
+                    </ul>
+                </x-sidebar.nav-link-dropdown>
             </li>
             <li>
                 <x-sidebar.nav-link>

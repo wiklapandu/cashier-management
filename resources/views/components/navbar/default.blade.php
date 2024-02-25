@@ -14,6 +14,16 @@
                 </div>
             </header>
         @endif
+        <form action="">
+            <div class="flex items-center px-4 border border-blue-200 bg-blue-100 rounded-full focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-blue-600">
+                <label class="text-blue-600" for="search">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                    </svg>
+                </label>
+                <input type="text" name="s" id="search" autocomplete="off" placeholder="Insert product name..." class="border-0 bg-transparent focus:border-transparent focus:ring-0 outline-none w-full ml-3">
+            </div>
+        </form>
         <div class="ml-auto relative">
             <x-dropdown align="right" width="48">
                 <x-slot name="trigger">

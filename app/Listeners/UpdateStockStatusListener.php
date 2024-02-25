@@ -5,6 +5,7 @@ namespace App\Listeners;
 use App\Events\UpdateProductStock;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Log;
 
 class UpdateStockStatusListener
 {
@@ -23,14 +24,12 @@ class UpdateStockStatusListener
     {
         //
         $product = $event->product;
-
-        if($product->stock === 0)
+        
+        if($product->stock <= 0 && $product->status_stock == 'instock')
         {
-            $product->status_stock = 'outstock';
-            $product->save();
-        } elseif ($product->stock > 0 && $product->status_stock === 'outstock') {
-            $product->status_stock = 'instock';
-            $product->save();
+            $product->update(['status_stock' => 'outstock']);
+        } elseif ($product->stock > 0 && $product->status_stock == 'outstock') {
+            $product->update(['status_stock' => 'instock']);
         }
     }
 }

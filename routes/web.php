@@ -26,3 +26,12 @@ Route::middleware([
         return view('dashboard');
     })->name('dashboard');
 });
+
+Route::prefix('/product')
+    ->middleware([
+        'auth:sanctum',
+        config('jetstream.auth_session'),
+    ])
+    ->group(function() {
+        Route::get('/', [\App\Http\Controllers\Admin\ProductController::class, 'index'])->middleware(['can:read order'])->name('product.read');
+    });
