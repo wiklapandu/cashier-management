@@ -35,3 +35,13 @@ Route::prefix('/product')
     ->group(function() {
         Route::get('/', [\App\Http\Controllers\Admin\ProductController::class, 'index'])->middleware(['can:read order'])->name('product.read');
     });
+
+Route::prefix('/order')
+    ->middleware([
+        'auth:sanctum',
+        config('jetstream.auth_session'),
+        'can:read order'
+    ])->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\OrderController::class, 'index'])->name('order.overviews');
+        Route::get('/create', [\App\Http\Controllers\Admin\OrderController::class, 'create'])->name('order.create');
+    });

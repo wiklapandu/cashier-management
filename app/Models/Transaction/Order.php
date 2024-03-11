@@ -22,6 +22,17 @@ class Order extends Model
     ];
     public $timestamps = true;
 
+    public function getStatusLists(): array
+    {
+        return [
+            "pending-payment" => 'Pending Payment',
+            "processing" => 'Processing',
+            "on-hold" => 'On Hold',
+            "completed" => 'Completed',
+            "cancelled" => 'Cancelled'
+        ];
+    }
+
     public function details()
     {
         return $this->hasOne(OrderDetails::class, 'order_id', 'id');

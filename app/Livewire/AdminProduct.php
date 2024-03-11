@@ -7,9 +7,11 @@ use Livewire\Component;
 use \App\Models\Inventory\Product;
 use App\Models\Inventory\ProductDetail;
 use Illuminate\Support\Facades\DB;
+use Livewire\WithPagination;
 
 class AdminProduct extends Component
 {
+    use WithPagination;
     public $productModal = [
         'id' => null,
         'name' => '',
@@ -138,7 +140,8 @@ class AdminProduct extends Component
 
     public function render()
     {
-        $products = Product::with(['details'])->orderBy('created_at', 'DESC')->get()->all();
+        $products = Product::query()->with(['details'])->orderBy('created_at', 'DESC')->paginate(6);
+        
         return view('livewire.admin-product', compact('products'));
     }
 }
