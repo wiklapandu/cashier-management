@@ -47,6 +47,7 @@ return new class extends Migration
             $table->uuid('product_id');
             $table->string('product_name');
             $table->longText('addons')->nullable();
+            $table->longText('product_detail')->nullable();
             $table->bigInteger('qty');
             $table->bigInteger('total');
 

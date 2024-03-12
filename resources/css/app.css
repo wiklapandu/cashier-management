@@ -5,3 +5,34 @@
 [x-cloak] {
     display: none;
 }
+
+.swal2-title {
+    @apply font-bold capitalize text-blue-700 text-xl leading-3;
+}
+
+.swal2-html-container p{
+    @apply font-normal text-xl;
+}
+
+.swal2-modal {
+    @apply rounded-2xl;
+}
+
+.sweet-alert-button {
+    @apply px-4 py-2 flex items-center border border-transparent rounded-full w-full font-semibold uppercase hover:scale-95 duration-150 ease-in;
+}
+
+.swal2-actions {
+    @apply !grid gap-2 w-5/6 justify-normal;
+}
+
+.swal2-image {
+    @apply m-0 my-1 mx-auto;
+}
+
+.sweet-alert-button.confirm-button {
+    @apply border-blue-700 text-white bg-blue-700 hover:bg-white hover:text-blue-700;
+}
+.sweet-alert-button.cancel-button {
+    @apply border-transparent hover:border-blue-700 text-blue-700;
+}

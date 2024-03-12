@@ -3,6 +3,7 @@
 namespace App\Livewire\Components;
 
 use Illuminate\Support\Facades\Log;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class SelectProduct extends Component

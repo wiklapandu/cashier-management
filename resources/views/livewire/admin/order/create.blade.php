@@ -115,7 +115,7 @@
                         <x-input type="number" value="1" class="block w-full" wire:model="temp_items.qty"/>
                     </x-label>
                     <div class="col-span-1 flex gap-1">
-                        <x-button-link href="#" class="block bg-white hover:bg-red-500 hover:!text-white active:ring-red-500 active:bg-red-500 active:!text-white border-red-500 !text-red-500" wire:click.prevent="unsetTempItem" wire:confirm="Are you sure want to unset this item?">
+                        <x-button-link href="#" class="block bg-white hover:bg-red-500 hover:!text-white active:ring-red-500 active:bg-red-500 active:!text-white border-red-500 !text-red-500" wire:click.prevent="confirmUnsetTempItem">
                            Cancel
                         </x-button-link>
                         <x-button type="button" class="block" wire:click.prevent="addItem">
@@ -124,6 +124,51 @@
                     </div>
                 </div>
             @endif
+            <table class="w-full">
+                <thead>
+                    <tr class="bg-gray-200 text-gray-600 border border-gray-200">
+                        <th colspan="2" class="p-3 min-w-[200px] text-left">Item</th>
+                        <th class="text-left">Cost</th>
+                        <th class="text-left">Qty</th>
+                        <th class="text-left">Total</th>
+                        <th class="text-left">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach ($items as $index => $item)
+                    <tr class="border border-b-gray-200">
+                        <td colspan="2" class="p-3 min-w-[200px] text-left">
+                            {{ $item['product_name'] }}
+                        </td>
+                        <td>
+                            {!! $item['product_detail']['price_html'] !!}
+                        </td>
+                        <td>{{ $item['qty'] }}</td>
+                        <td>{{ Str::get_price_html($item['total']) }}</td>
+                        <td>
+                            <x-button-link href="#">Edit</x-button-link>
+                            <a href="#" wire:click.prevent="confirmRemoveRow({{$index}})" class="inline-block px-4 py-1 text-red-500 border border-red-500 hover:text-white hover:bg-red-500 duration-150 active:scale-95 ease-in rounded-md">Remove</a>
+                        </td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
+            <div class="calculate-row px-4 py-8 border-b border-b-gray-400">
+                <table class="w-1/2 ml-auto text-right">
+                    <tbody>
+                        <tr>
+                            <td class="text-lg font-medium text-gray-600">Items subtotal:</td>
+                            <td width="1%"></td>
+                            <td class="font-bold">{!! Str::get_price_html($items_subtotal) !!}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-lg font-medium text-gray-600">Order Total:</td>
+                            <td width="1%"></td>
+                            <td class="font-bold">{!! Str::get_price_html($order_total) !!}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             </div>
         </div>
     </div>
