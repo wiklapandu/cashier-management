@@ -18,6 +18,8 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             UsersSeeder::class,
         ]);
+
+        \App\Models\Inventory\Product::factory()->count(10)->create();
         // \App\Models\User::factory()->create([
         //     'name' => 'Wikla Pandu',
         //     'email' => 'admin@admin.com',
