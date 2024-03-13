@@ -23,6 +23,13 @@ class OrderItems extends Model
     ];
     public $timestamps = false;
     
+    protected static function boot()
+    {
+        parent::boot();
+        static::saved(function ($product) {
+            event(new \App\Events\OrderProductStock($product));
+        });
+    }
     public function product()
     {
         return $this->hasOne(\App\Models\Inventory\Product::class, 'id', 'product_id');
@@ -30,5 +37,10 @@ class OrderItems extends Model
     public function order()
     {
         return $this->belongsTo(Order::class, 'id', 'order_id');
+    }
+
+    public function getProductDetailAttribute()
+    {
+        return json_decode($this->product_detail);
     }
 }

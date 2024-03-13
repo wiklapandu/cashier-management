@@ -6,7 +6,7 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white p-6 shadow-xl sm:rounded-lg overflow-hidden">
                 <div class="mb-4">
                     <x-button-link href="{{ route('order.create') }}">Add Order</x-button-link>

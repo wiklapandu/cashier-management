@@ -22,17 +22,6 @@ class Order extends Model
     ];
     public $timestamps = true;
 
-    public function getStatusLists(): array
-    {
-        return [
-            "pending-payment" => 'Pending Payment',
-            "processing" => 'Processing',
-            "on-hold" => 'On Hold',
-            "completed" => 'Completed',
-            "cancelled" => 'Cancelled'
-        ];
-    }
-
     public function details()
     {
         return $this->hasOne(OrderDetails::class, 'order_id', 'id');
@@ -41,5 +30,20 @@ class Order extends Model
     public function items()
     {
         return $this->hasMany(OrderItems::class, 'order_id', 'id');
+    }
+
+    public function author()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'author_id', 'id');
+    }
+
+    public function getStatusLabel()
+    {
+        return config("order.status.{$this->status}") ?? $this->status;
+    }
+
+    public function getCreatedAtFormated($format = 'L')
+    {
+        return \Carbon\Carbon::parse($this->created_at)->translatedFormat($format);
     }
 }

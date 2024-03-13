@@ -25,4 +25,14 @@ class OrderDetails extends Model
     {
         return $this->belongsTo(Order::class, 'id', 'order_id');
     }
+
+    public function getCustomerDetailAttribute($value)
+    {
+        return json_decode($value);
+    }
+
+    public function getBillingDetailAttribute($value)
+    {
+        return json_decode($value);
+    }
 }

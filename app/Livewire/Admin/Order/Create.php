@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Admin\Order;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use Livewire\Attributes\On;
@@ -15,11 +16,55 @@ class Create extends Component
     public $billings = [];
     public $setBillingDetails = false;
     public $billing_details = [];
+    public $billing_method = '';
+    public $billing_note;
     public $order = [];
+    public $created_at = '';
 
     public function save()
     {
+        $this->dispatch('order-item-calculate-subtotal');
+        $this->dispatch('order-item-calculate-order-total');
+
         $current_user_id = auth()->user()->id;
+        
+        $this->order['author_id'] = $current_user_id;
+        $this->order['items_subtotal'] = $this->items_subtotal;
+        $this->order['order_total'] = $this->order_total;
+
+        DB::beginTransaction();
+        try {
+            $order = new \App\Models\Transaction\Order($this->order);
+            $order->created_at = $this->created_at;
+            $order->save();
+    
+            $items = $this->items;
+            $items = \Illuminate\Support\Arr::map($this->items, function ($data) {
+                $data['product_detail'] = json_encode($data['product_detail']);
+                return new \App\Models\Transaction\OrderItems($data);
+            });
+            $order->items()->saveMany($items);
+
+            Log::info($this->billing_note);
+            $order->details()->save(new \App\Models\Transaction\OrderDetails([
+                'customer_detail' => json_encode([
+                    'customer_id' => $this->order['customer_id'],
+                    'user' => \App\Models\User::find($this->order['customer_id']),
+                ]),
+                'billing_method' => $this->billing_method,
+                'billing_detail' => json_encode($this->billing_details),
+                'note'           => $this->billing_note,
+            ]));
+
+            Log::info('============ done ===========');
+            DB::commit();
+            return redirect()->route('order.overviews');
+        } catch (\Exception $exception) {
+            Log::info('============ error ===========');
+            Log::info($exception->getMessage());
+            Log::info('============ error ===========');
+            DB::rollBack();
+        }
     }
 
     #[On('order-item-calculate-subtotal')]
@@ -151,7 +196,7 @@ class Create extends Component
 
     public function render()
     {
-        $statusLists = (new \App\Models\Transaction\Order)->getStatusLists();
+        $statusLists = config('order.status');
         $customersLists = \App\Models\User::query()->pluck('name', 'id')->all();
         return view('livewire.admin.order.create', compact('statusLists', 'customersLists'));
     }

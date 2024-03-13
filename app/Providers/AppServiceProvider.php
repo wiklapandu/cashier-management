@@ -32,5 +32,7 @@ class AppServiceProvider extends ServiceProvider
     
             return "Rp. ".number_format($price, 2, ',', '.');
         });
+
+        \Illuminate\Support\Facades\App::setLocale('id');
     }
 }

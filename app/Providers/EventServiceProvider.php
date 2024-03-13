@@ -21,6 +21,9 @@ class EventServiceProvider extends ServiceProvider
         \App\Events\UpdateProductStock::class => [
             \App\Listeners\UpdateStockStatusListener::class,
         ],
+        \App\Events\OrderProductStock::class => [
+            \App\Listeners\OrderProductStockChange::class,
+        ]
     ];
 
     /**

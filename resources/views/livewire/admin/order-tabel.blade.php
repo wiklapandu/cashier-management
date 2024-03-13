@@ -36,12 +36,12 @@
                         >
                             {{ $order->id }}
                         </th>
-                        <td class="px-6 py-4"></td>
-                        <td class="px-6 py-4"></td>
-                        <td class="px-6 py-4"></td>
-                        <td class="px-6 py-4"></td>
-                        <td class="px-6 py-4"></td>
-                        <td class="px-6 py-4"></td>
+                        <td class="px-6 py-4">{{$order->details->customer_detail->user->name}}</td>
+                        <td class="px-6 py-4">{{ Str::get_price_html($order->items_subtotal) }}</td>
+                        <td class="px-6 py-4">{{ Str::get_price_html($order->order_total) }}</td>
+                        <td class="px-6 py-4">{{ $order->author->name ?? $order->author_id }}</td>
+                        <td class="px-6 py-4">{{ $order->getStatusLabel() }}</td>
+                        <td class="px-6 py-4">{{ $order->getCreatedAtFormated('d F Y') }}</td>
                         <td class="px-6 py-4"></td>
                     </tr>
                 @endforeach
