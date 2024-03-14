@@ -27,6 +27,23 @@ const handleswalConfirm = () => {
             }
         })
     })
+
+    Livewire.on('swal:error', (data) => {
+        data = JSON.parse(data);
+
+        Swal.fire({
+            title: 'Woups!',
+            html: data.text,
+            showCancelButton: true,
+            icon: 'error',
+            buttonsStyling: false,
+            confirmButtonText: data.confirmButton ?? 'close',
+            cancelButtonText: '',
+            customClass: {
+                confirmButton: 'sweet-alert-button confirm-button',
+            }
+        })
+    })
 }
 
 try {

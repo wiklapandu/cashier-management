@@ -24,12 +24,13 @@ class SelectProduct extends Component
         if($listenerName) {
             $this->listenerName = $listenerName;
         }
-
+        
         if ($value) {
             try {
                 $find = \App\Models\Inventory\Product::query()->find($value, ['name', 'id']);
                 $this->selected['label'] = $find->name;
                 $this->selected['value'] = $find->id;
+                $this->search = $find->name;
             } catch (\Exception $exception) {
                 Log::error($exception->getMessage());
             }
@@ -43,7 +44,8 @@ class SelectProduct extends Component
     public function find()
     {
         $value = $this->search;
-        // $this->search = $value;
+        $this->search = $value;
+        Log::info('running find() =======');
         $products = \App\Models\Inventory\Product::query();
         $products->where('name', 'LIKE', "%$value%");
 

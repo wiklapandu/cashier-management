@@ -11,6 +11,17 @@
             <div class="flex items-center font-medium mb-3">
                 <h2 class="text-lg font-medium">Order Details</h2>
             </div>
+            @if ($messages = $errors->all())
+            <div class="block bg-red-300 border-2 mb-4 border-red-700 text-red-700 py-2 px-4 font-medium rounded-xl">
+                <p>
+                    <ul class="gap-2 grid">
+                    @foreach ($messages as $message)
+                        <li>{{$message}}</li>
+                    @endforeach
+                    </ul>
+                </p>
+            </div>
+            @endif
             <div class="grid grid-cols-3 gap-2">
                 <div>
                     <h3 class="font-medium mb-3">General</h3>
@@ -18,6 +29,7 @@
                         <x-label>
                             {{ __('Date Created') }}
                             <x-input type="date" name="created_at" class="block w-full" wire:model="created_at" />
+                            <x-input-error for="created_at" />
                         </x-label>
                     </div>
                     <div class="mb-2">
@@ -29,6 +41,7 @@
                                 <option value="{{ $value }}">{{ $label }}</option>
                                 @endforeach
                             </x-select>
+                            <x-input-error for="order.status" />
                         </x-label>
                     </div>
                     <div class="mb-2">
@@ -40,6 +53,8 @@
                                 <option value="{{ $value }}">{{ $label }}</option>
                                 @endforeach
                             </x-select>
+                            
+                            <x-input-error for="order.customer_id" />
                         </x-label>
                     </div>
                 </div>
@@ -108,6 +123,8 @@
                                 <option value="{{ $key }}">{{ $value }}</option>
                             @endforeach
                         </x-select>
+                        
+                        <x-input-error for="billing_method" />
                     </x-label>
                 </div>
                 <div class="mb-3">
@@ -135,16 +152,18 @@
         <div class="mb-4">
             <div class="lists_of_items grid">
             @if (isset($temp_items['product_id']))
-                <div class="grid w-full grid-cols-5 p-3 gap-2 items-end">
+                <div class="grid w-full grid-cols-5 p-3 gap-2 items-start">
                     <x-label class="col-span-2">
                         {{__('Product')}}
-                        <livewire:components.select-product listenerName="temp-item-set-product"/>
+                        <livewire:components.select-product value="{{ $temp_items['product_id'] ?? '' }}" listenerName="temp-item-set-product"/>
+                        <x-input-error for="temp_items.product_id" />
                     </x-label>
                     <x-label class="col-span-2">
                         {{__('QTY')}}
                         <x-input type="number" value="1" class="block w-full" wire:model="temp_items.qty"/>
+                        <x-input-error for="temp_items.qty" />
                     </x-label>
-                    <div class="col-span-1 flex gap-1">
+                    <div class="col-span-1 flex gap-1 self-center">
                         <x-button-link href="#" class="block bg-white hover:bg-red-500 hover:!text-white active:ring-red-500 active:bg-red-500 active:!text-white border-red-500 !text-red-500" wire:click.prevent="confirmUnsetTempItem">
                            Cancel
                         </x-button-link>
@@ -176,7 +195,7 @@
                         <td>{{ $item['qty'] }}</td>
                         <td>{{ Str::get_price_html($item['total']) }}</td>
                         <td>
-                            <x-button-link href="#">Edit</x-button-link>
+                            <x-button-link href="#" wire:click.prevent="editTempItem({{$index}})">Edit</x-button-link>
                             <a href="#" wire:click.prevent="confirmRemoveRow({{$index}})" class="inline-block px-4 py-1 text-red-500 border border-red-500 hover:text-white hover:bg-red-500 duration-150 active:scale-95 ease-in rounded-md">Remove</a>
                         </td>
                     </tr>

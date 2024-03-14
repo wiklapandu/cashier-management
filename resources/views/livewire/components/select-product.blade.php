@@ -1,7 +1,7 @@
 @props(['class' => ''])
 
 <div class="w-full relative" x-data="{show: false}" @click.away="show = false">
-    <x-input placeholder="Search Product..." wire:model="search" wire:input.debounce.250ms="find" class="w-full peer select-search" @focus="show = true"/>
+    <x-input placeholder="Search Product..." wire:model="search" wire:input.debounce.250ms="find" class="w-full select-search" @focus="show = true"/>
 
     <div x-show="show" class="bg-white shadow-xl h-fit absolute z-50 grid gap-y-1 overflow-auto w-full mt-3 rounded-md">
         @if(isset($selected['label'])) 

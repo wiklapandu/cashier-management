@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use Livewire\Attributes\On;
+use App\Models\Transaction\OrderItems;
 
 class Create extends Component
 {
@@ -20,9 +21,41 @@ class Create extends Component
     public $billing_note;
     public $order = [];
     public $created_at = '';
+    protected $rules = [
+        'temp_items.qty' => ['required'],
+        'temp_items.product_id' => ['required_if:items,empty'],
+        'order.status' => ['required'],
+        'order.customer_id' => ['required'],
+        'billing_method' => ['required'],
+        'created_at' => ['required'],
+    ];
+
+    public function validationAttributes()
+    {
+        return [
+            'temp_items.product_id' => 'product',
+            'temp_items.qty' => 'quantity',
+            'order.status' => 'Order Status',
+            'order.customer_id' => 'Customer',
+            'billing_method' => 'Payment Method',
+            'created_at' => 'Date Created',
+        ];
+    }
+
+    public function updated($propertyName)
+    {
+        $this->validateOnly($propertyName);
+    }
 
     public function save()
     {
+        $this->validate();
+        if(!boolval($this->items)) {
+            return $this->dispatch('swal:error', json_encode([
+                'text' => '<p>Row Product can\'t be empty</p>',
+                'confirmButton' => 'Close'
+            ]));
+        }
         $this->dispatch('order-item-calculate-subtotal');
         $this->dispatch('order-item-calculate-order-total');
 
@@ -41,7 +74,7 @@ class Create extends Component
             $items = $this->items;
             $items = \Illuminate\Support\Arr::map($this->items, function ($data) {
                 $data['product_detail'] = json_encode($data['product_detail']);
-                return new \App\Models\Transaction\OrderItems($data);
+                return new OrderItems($data);
             });
             $order->items()->saveMany($items);
 
@@ -56,14 +89,13 @@ class Create extends Component
                 'note'           => $this->billing_note,
             ]));
 
-            Log::info('============ done ===========');
             DB::commit();
             return redirect()->route('order.overviews');
         } catch (\Exception $exception) {
-            Log::info('============ error ===========');
             Log::info($exception->getMessage());
-            Log::info('============ error ===========');
-            DB::rollBack();
+            $this->dispatch('swal:error', json_encode([
+                'text' => 'failed save order: '.$exception->getMessage(),
+            ]));
         }
     }
 
@@ -85,6 +117,19 @@ class Create extends Component
 
     public function addItem()
     {
+        $this->validate();
+
+        if(!boolval($this->temp_items['product_id'])) {
+            return $this->dispatch('swal:error', json_encode([
+                'text' => 'Please fill product first before create new row',
+                'confirmButton' => 'Close'
+            ]));
+        }
+
+        if(isset($this->temp_items['index'])) {
+            return $this->editItem($this->temp_items['index']);
+        }
+
         $product_id = $this->temp_items['product_id'];
         $product = \App\Models\Inventory\Product::find($product_id);
         $product_name = $product->name;
@@ -110,6 +155,17 @@ class Create extends Component
         $this->dispatch('order-item-calculate-subtotal');
         $this->dispatch('order-item-calculate-order-total');
         $this->unsetTempItem();   
+    }
+
+    public function editTempItem($index)
+    {
+        if(!isset($this->items[$index])) return;
+
+        $item = $this->items[$index];
+
+        $this->temp_items['index'] = $index;
+        $this->temp_items['product_id'] = $item['product_id'];
+        $this->temp_items['qty'] = $item['qty'];
     }
 
     public function editItem($index)
@@ -139,6 +195,7 @@ class Create extends Component
         $this->dispatch('order-item-calculate-subtotal');
         $this->dispatch('order-item-calculate-order-total');
 
+        unset($this->temp_items['index']);
         $this->unsetTempItem();   
     }
 
